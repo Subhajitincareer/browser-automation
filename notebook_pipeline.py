@@ -28,8 +28,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
 
-from dotenv import load_dotenv
+import warnings
+warnings.filterwarnings("ignore")
+
 from google import genai
+from dotenv import load_dotenv
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
@@ -133,6 +136,7 @@ def wait_for_answer(driver):
 
     existing_pairs = driver.find_elements(By.CSS_SELECTOR, "div.chat-message-pair")
     initial_count = len(existing_pairs)
+    initial_last_text = existing_pairs[-1].text if existing_pairs else ""
     print(f"    Existing chat pairs: {initial_count}")
 
     start_time = time.time()
@@ -143,6 +147,14 @@ def wait_for_answer(driver):
         if len(current_pairs) > initial_count:
             new_pair = current_pairs[-1]
             print("[OK] New answer detected!")
+            break
+        elif current_pairs and current_pairs[-1].text != initial_last_text:
+            new_pair = current_pairs[-1]
+            print("[OK] Answer update detected!")
+            break
+        elif time.time() - start_time > 15 and current_pairs:
+            new_pair = current_pairs[-1]
+            print("[OK] Using latest chat pair after 15s wait...")
             break
         time.sleep(2)
 
