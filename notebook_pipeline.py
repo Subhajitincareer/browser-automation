@@ -153,7 +153,7 @@ def wait_for_answer(driver):
     last_text = ""
     stable_count = 0
 
-    while stable_count < 5 and (time.time() - start_time) < MAX_ANSWER_WAIT:
+    while stable_count < 3 and (time.time() - start_time) < MAX_ANSWER_WAIT:
         try:
             current_text = new_pair.text
             if current_text == last_text and len(current_text) > 10:
@@ -161,6 +161,8 @@ def wait_for_answer(driver):
             else:
                 stable_count = 0
                 last_text = current_text
+                if len(current_text) > 10:
+                    print(f"    [Streaming...] Received {len(current_text)} chars...")
         except StaleElementReferenceException:
             current_pairs = driver.find_elements(By.CSS_SELECTOR, "div.chat-message-pair")
             if current_pairs:
@@ -207,21 +209,20 @@ def wait_for_answer(driver):
 
 
 def convert_with_gemini_api(answer_text, prompt_text):
-    """Send the answer to Gemini API to convert to well-formatted HTML."""
-    print("[*] Sending to Gemini API for HTML conversion...")
+    """Send the answer to Gemini API to convert to well-formatted HTML (with offline fallback)."""
+    print("[*] Converting answer to HTML...")
 
-    client = genai.Client(api_key=GEMINI_API_KEY)
-
-    api_prompt = f"""Convert the following text into a beautiful, well-formatted HTML document. 
-    
+    try:
+        if GEMINI_API_KEY:
+            client = genai.Client(api_key=GEMINI_API_KEY)
+            api_prompt = f"""Convert the following text into a beautiful, well-formatted HTML document. 
+            
 Requirements:
 - Create a complete HTML page with proper <html>, <head>, <body> tags
 - Add a professional CSS stylesheet inside <style> tags
 - Use a clean, readable font (Google Fonts: Noto Sans Bengali for Bengali text, Inter for English)
-- Add proper headings, paragraphs, lists, and tables where appropriate
 - Title should be based on the topic: "{prompt_text}"
-- Format any code blocks, bullet points, and numbered lists properly
-- Keep all Bengali/Hindi text as-is, do not translate
+- Keep all Bengali text as-is, do not translate
 
 Text to convert:
 ---
@@ -230,18 +231,22 @@ Text to convert:
 
 Return ONLY the complete HTML code, no explanation."""
 
-    response = client.models.generate_content(
-        model="gemini-3.6-flash",
-        contents=api_prompt
-    )
-    html_content = response.text
+            response = client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=api_prompt
+            )
+            html_content = response.text
+            html_content = re.sub(r'^```html\s*', '', html_content, flags=re.MULTILINE)
+            html_content = re.sub(r'^```\s*$', '', html_content, flags=re.MULTILINE)
+            print(f"[OK] Gemini API returned HTML ({len(html_content)} chars)")
+            return html_content.strip()
+    except Exception as e:
+        print(f"[!] Gemini API conversion failed or timed out: {e}")
+        print("[*] Falling back to local offline HTML builder...")
 
-    html_content = re.sub(r'^```html\s*', '', html_content, flags=re.MULTILINE)
-    html_content = re.sub(r'^```\s*$', '', html_content, flags=re.MULTILINE)
-    html_content = html_content.strip()
-
-    print(f"[OK] Gemini API returned HTML ({len(html_content)} chars)")
-    return html_content
+    # Offline fallback
+    from generate_final_outputs import build_html
+    return build_html(answer_text)
 
 
 def save_html(html_content, filename):
