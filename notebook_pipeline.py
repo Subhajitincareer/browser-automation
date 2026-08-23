@@ -292,29 +292,64 @@ def main():
     parser.add_argument("--prompt-file", type=str, default="", help="Path to a text file containing the prompt")
     parser.add_argument("--notebook-url", type=str, default=DEFAULT_NOTEBOOK_URL, help="Notebook URL to open")
     parser.add_argument("--output-name", type=str, default="", help="Base name for output files")
+    parser.add_argument("--extract-only", action="store_true", help="Fetch latest answer directly from notebook without sending a new prompt")
     args = parser.parse_args()
 
-    if args.prompt_file:
+    prompt_text = ""
+    if args.prompt_file and os.path.exists(args.prompt_file):
         with open(args.prompt_file, "r", encoding="utf-8") as f:
             prompt_text = f.read().strip()
         print(f"[OK] Loaded prompt from file: {args.prompt_file} ({len(prompt_text)} chars)")
     elif args.prompt:
         prompt_text = args.prompt
-    else:
-        parser.error("Either --prompt or --prompt-file is required")
+    elif not args.extract_only:
+        parser.error("Either --prompt, --prompt-file, or --extract-only is required")
 
     if args.output_name:
         base_name = args.output_name
     else:
-        base_name = re.sub(r'[^\w\s-]', '', prompt_text[:60]).strip().replace(' ', '_')[:40]
+        base_name = re.sub(r'[^\w\s-]', '', prompt_text[:60]).strip().replace(' ', '_')[:40] if prompt_text else "cc02_sample_paper"
         base_name = base_name or "notebook_output"
 
     driver = None
     try:
         driver = start_browser()
         open_notebook(driver, args.notebook_url)
-        send_prompt(driver, prompt_text)
-        answer_text = wait_for_answer(driver)
+        
+        if not args.extract_only:
+            send_prompt(driver, prompt_text)
+            answer_text = wait_for_answer(driver)
+        else:
+            print("[*] --extract-only mode: Fetching existing answer directly from notebook...")
+            # Extract current latest chat/studio content immediately
+            existing_pairs = driver.find_elements(By.CSS_SELECTOR, "div.chat-message-pair")
+            if existing_pairs:
+                latest = existing_pairs[-1]
+                answer_elements = latest.find_elements(By.CSS_SELECTOR, ".chat-message-content, .response-container, .message-content, .chat-message-text")
+                answer_text = answer_elements[-1].text if answer_elements else latest.text
+            else:
+                answer_text = ""
+
+            studio_selectors = [
+                ".studio-panel", ".artifact-view", "note-viewer", ".note-content",
+                "[data-test-id='artifact-content']", ".markdown-content", ".artifact-container"
+            ]
+            studio_text = ""
+            for sel in studio_selectors:
+                try:
+                    elements = driver.find_elements(By.CSS_SELECTOR, sel)
+                    for el in elements:
+                        t = el.text.strip()
+                        if len(t) > len(studio_text):
+                            studio_text = t
+                except Exception:
+                    pass
+
+            if len(studio_text) > len(answer_text):
+                answer_text = studio_text
+
+            answer_text = re.sub(r'\[\d+\]', '', answer_text)
+            print(f"[OK] Extracted existing answer ({len(answer_text)} chars)")
 
         if not answer_text:
             print("[!] No answer received. Exiting.")
