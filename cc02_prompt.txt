@@ -1,0 +1,163 @@
+CC-02 EXPERT SAMPLE QUESTION PAPER PROMPT
+
+Act as an expert D.El.Ed Question Paper Setter, Examiner and Curriculum Analyst.
+
+Using ONLY the Notebook sources, create a realistic CC-02 sample question paper based on the official syllabus, textbook and all available previous-year question papers.
+
+SOURCE PRIORITY
+
+Syllabus → Previous-Year Papers → Textbook → Existing Marks/Instructions
+
+Follow the existing:
+
+Total marks
+
+Duration
+
+Sections
+
+Question count
+
+Marks/question
+
+Question types
+
+Internal choices
+
+Instructions
+
+
+Never change them unless the sources conflict.
+
+ANALYSIS FIRST
+
+Do NOT generate questions immediately.
+
+Analyze:
+
+Syllabus — units, topics, sub-topics, concepts and important areas.
+
+All PYQs — repeated questions, repeated concepts, topic/unit frequency, question types, marks pattern, difficulty, wording and choices.
+
+Textbook — verify that every proposed question is actually covered.
+
+Topic Priority — classify topics as VERY HIGH / HIGH / MEDIUM / LOW using syllabus + textbook + PYQ evidence.
+
+
+Workflow:
+
+SOURCE → SYLLABUS → PYQ → REPETITION → QUESTION TYPES → PRIORITY → BLUEPRINT → PAPER → AUDIT
+
+QUESTION RULES
+
+Every question must be:
+
+Syllabus-aligned
+
+Textbook-supported
+
+Based on PYQ patterns
+
+Appropriate for its marks
+
+Appropriate in difficulty
+
+Clearly worded
+
+Suitable for a real D.El.Ed exam
+
+
+Do NOT:
+
+Use unsupported outside knowledge
+
+Copy PYQs verbatim
+
+Invent probability percentages
+
+Ask obscure/out-of-syllabus questions
+
+Repeat the same concept unnecessarily
+
+Alter the prescribed exam structure
+
+
+Use PYQs to identify patterns, not to copy questions.
+
+Maintain balanced:
+
+Unit coverage
+
+Question types
+
+Difficulty
+
+Knowledge/understanding/application/analysis where supported
+
+
+Prefer approximately Easy 30–40%, Moderate 40–50%, Difficult 10–20%, unless PYQs show a different pattern.
+
+FINAL PAPER
+
+Generate ONE complete authentic CC-02 sample question paper.
+
+Match the source papers':
+
+Title
+
+Subject
+
+Paper code
+
+Time
+
+Full marks
+
+Sections
+
+Numbering
+
+Marks
+
+Instructions
+
+Internal choices
+
+Language/style
+
+
+Do not include answers or solutions.
+
+OUTPUT
+
+A. EXAM BLUEPRINT
+
+Show total marks, duration, sections, question types, question count and choices.
+
+B. PYQ PATTERN
+
+Briefly show repeated units, concepts, question types and marks trends.
+
+C. TOPIC PRIORITY
+
+Show Unit/Topic → Priority → Evidence.
+
+D. FINAL SAMPLE QUESTION PAPER
+
+Give only the examination paper.
+
+E. QUALITY AUDIT
+
+Check:
+
+Syllabus ✓ | Marks ✓ | PYQ Pattern ✓ | Textbook ✓ | Difficulty ✓ | Duplication ✓
+
+If anything fails, revise before presenting.
+
+FINAL OBJECTIVE
+
+Create a:
+
+SOURCE-GROUNDED + SYLLABUS-ALIGNED + TEXTBOOK-SUPPORTED + PYQ-PATTERN-INFORMED + AUTHENTIC D.El.Ed CC-02 SAMPLE PAPER.
+
+just only give question paper . not explain anything , no other give , in bengali .

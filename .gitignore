@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment & Keys
+.env
+
+# HTML & Log Dumps
+*.html
+*.txt
+*.log
+!cc02_prompt.txt
+!README.md
+
+# Output PDFs
+*.pdf
+
+# Temp directory
+temp/
