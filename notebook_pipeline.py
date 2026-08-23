@@ -28,7 +28,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
 
-from google import genai
+from dotenv import load_dotenv
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Redirect temporary files to E:\temp (where 156 GB space is available)
 os.environ["TMP"] = r"E:\temp"
@@ -39,7 +42,6 @@ os.makedirs(r"E:\temp", exist_ok=True)
 FIREFOX_PROFILE_PATH = r"C:\Users\SUBHAJIT PAL\AppData\Roaming\Mozilla\Firefox\Profiles\hqrp69r2.default-release-1787274643325"
 DEFAULT_NOTEBOOK_URL = "https://notebook.google.com/notebook/16df629f-4702-4b7e-9dc9-09e5739b77f2"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(BASE_DIR, "exam_papers")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 WAIT_TIMEOUT = 30
