@@ -221,6 +221,8 @@ def wait_for_answer(driver):
     return answer_text
 
 
+from google.genai import types
+
 def convert_with_gemini_api(answer_text, prompt_text):
     """Send the answer to Gemini API to convert to well-formatted HTML (with offline fallback)."""
     print("[*] Converting answer to HTML...")
@@ -244,9 +246,16 @@ Text to convert:
 
 Return ONLY the complete HTML code, no explanation."""
 
+            config = types.GenerateContentConfig(
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                    disable=True
+                )
+            )
+
             response = client.models.generate_content(
                 model="gemini-3.6-flash",
-                contents=api_prompt
+                contents=api_prompt,
+                config=config
             )
             html_content = response.text
             html_content = re.sub(r'^```html\s*', '', html_content, flags=re.MULTILINE)
@@ -254,8 +263,7 @@ Return ONLY the complete HTML code, no explanation."""
             print(f"[OK] Gemini API returned HTML ({len(html_content)} chars)")
             return html_content.strip()
     except Exception as e:
-        print(f"[!] Gemini API conversion failed or timed out: {e}")
-        print("[*] Falling back to local offline HTML builder...")
+        print(f"[!] Gemini API conversion skipped/failed ({e}). Using local offline HTML builder...")
 
     # Offline fallback
     from generate_final_outputs import build_html
